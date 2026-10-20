@@ -24,3 +24,8 @@ The tests covered creating fixed and flexible schedules, displaying available ti
 
 All of my 7 tests produced the expected results.
 
+## Known Issues in Third-Party Modules
+List any flaws you found in the other student's module that affected your application, how they
+show up, and how you handled them (e.g. a workaround, or a link to an issue you filed in the
+module's repository). Write "None found" if there weren't any.
+Answer: None found.
