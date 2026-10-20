@@ -7,16 +7,28 @@ import org.bookingscheduler.Slot;
 import java.time.LocalTime;
 import java.time.format.DateTimeParseException;
 
+/**
+ * Handles the menus and user input for the hair salon application.
+ */
 public class SalonMenu {
 
     private final Scanner scanner;
     private final SalonService salon;
 
+    /**
+     * Creates a menu using the given input scanner and salon service.
+     *
+     * @param scanner scanner used to read user input
+     * @param salon salon service used for salon operations
+     */
     public SalonMenu(Scanner scanner, SalonService salon) {
         this.scanner = scanner;
         this.salon = salon;
     }
 
+    /**
+     * Starts the main menu.
+     */
     public void run() {
         clearScreen();
 
@@ -55,6 +67,9 @@ public class SalonMenu {
 
     }
 
+    /**
+     * Displays the customer menu.
+     */
     private void showCustomerMenu() {
         clearScreen();
 
@@ -97,6 +112,9 @@ public class SalonMenu {
 
     }
 
+    /**
+     * Displays the available appointment times for a selected service.
+     */
     private void showAvailableTimes() {
 
         String scheduleName = selectService();
@@ -122,6 +140,11 @@ public class SalonMenu {
 
     }
 
+    /**
+     * Lets the user select a salon service.
+     *
+     * @return the selected service name, or {@code null} if the selection is invalid
+     */
     private String selectService() {
         List<String> scheduleNames = salon.getScheduleNames();
 
@@ -155,16 +178,25 @@ public class SalonMenu {
         return scheduleNames.get(selectedServiceNumber - 1);
     }
 
+    /**
+     * Clears the console screen.
+     */
     private void clearScreen() {
         System.out.print("\u001B[2J\u001B[3J\u001B[H");
         System.out.flush();
     }
 
+    /**
+     * Waits for the user to press Enter.
+     */
     private void waitForEnter() {
         System.out.print("\nPress Enter to continue...");
         scanner.nextLine();
     }
 
+    /**
+     * Displays the appointment booking menu and books an appointment.
+     */
     private void showBookingMenu() {
 
         String scheduleName = selectService();
@@ -214,6 +246,9 @@ public class SalonMenu {
         }
     }
 
+    /**
+     * Displays the administrator menu.
+     */
     private void showAdminMenu() {
 
         while (true) {
@@ -273,6 +308,9 @@ public class SalonMenu {
         }
     }
 
+    /**
+     * Creates a fixed schedule from user input.
+     */
     private void createFixedSchedule() {
 
         System.out.println("=== CREATE FIXED SCHEDULE ===");
@@ -297,6 +335,9 @@ public class SalonMenu {
         System.out.println("Fixed schedule created successfully!");
     }
 
+    /**
+     * Creates a flexible schedule from user input.
+     */
     private void createFlexibleSchedule() {
 
         System.out.println("=== CREATE FLEXIBLE SCHEDULE ===");
@@ -317,6 +358,9 @@ public class SalonMenu {
         System.out.println("Flexible schedule created successfully!");
     }
 
+    /**
+     * Adds a time slot to a selected flexible schedule.
+     */
     private void addFlexibleSlot() {
 
         String scheduleName = selectService();
@@ -338,6 +382,9 @@ public class SalonMenu {
         System.out.println("Slot added successfully!");
     }
 
+    /**
+     * Displays the bookings for a selected service.
+     */
     private void showBookings() {
 
         String scheduleName = selectService();
@@ -373,11 +420,24 @@ public class SalonMenu {
         }
     }
 
+    /**
+     * Reads a time from the user.
+     *
+     * @param prompt message shown before reading the time
+     * @return the entered time
+     */
     private LocalTime readTime(String prompt) {
         System.out.print(prompt);
         return LocalTime.parse(scanner.nextLine().trim());
     }
 
+    /**
+     * Checks that the opening time is before the closing time.
+     *
+     * @param openingTime salon opening time
+     * @param closingTime salon closing time
+     * @throws IllegalArgumentException if the opening time is not before the closing time
+     */
     private void validateOpeningHours(LocalTime openingTime, LocalTime closingTime) {
         if (!openingTime.isBefore(closingTime)) {
             throw new IllegalArgumentException(

@@ -10,10 +10,21 @@ import org.bookingscheduler.Slot;
 import java.util.ArrayList;
 import org.bookingscheduler.Booking;
 
+/**
+ * Manages salon schedules and appointments.
+ */
 public class SalonService {
 
     private final Map<String, TimeTable> schedules = new HashMap<>();
 
+    /**
+     * Creates a schedule with fixed-length time slots.
+     *
+     * @param scheduleName name of the schedule
+     * @param openingTime schedule opening time
+     * @param closingTime schedule closing time
+     * @param slotDuration duration of each slot in minutes
+     */
     public void createFixedSchedule(String scheduleName, LocalTime openingTime, LocalTime closingTime,
             int slotDuration) {
 
@@ -24,6 +35,13 @@ public class SalonService {
 
     }
 
+    /**
+     * Returns a schedule with the specified name.
+     *
+     * @param scheduleName name of the schedule
+     * @return the requested schedule
+     * @throws IllegalArgumentException if the schedule does not exist
+     */
     public TimeTable getSchedule(String scheduleName) {
         if (!schedules.containsKey(scheduleName)) {
             throw new IllegalArgumentException("Schedule name does not exist!");
@@ -31,6 +49,13 @@ public class SalonService {
         return schedules.get(scheduleName);
     }
 
+    /**
+     * Creates a schedule where time slots can be added manually.
+     *
+     * @param scheduleName name of the schedule
+     * @param openingTime schedule opening time
+     * @param closingTime schedule closing time
+     */
     public void createFlexibleSchedule(String scheduleName, LocalTime openingTime, LocalTime closingTime) {
 
         validateScheduleName(scheduleName);
@@ -38,6 +63,12 @@ public class SalonService {
         schedules.put(scheduleName, flexibleSchedule);
     }
 
+    /**
+     * Checks that a schedule name is valid and not already in use.
+     *
+     * @param scheduleName name to validate
+     * @throws IllegalArgumentException if the name is empty or already exists
+     */
     private void validateScheduleName(String scheduleName) {
 
         if (scheduleName == null || scheduleName.isBlank()) {
@@ -49,6 +80,14 @@ public class SalonService {
 
     }
 
+    /**
+     * Adds a time slot to a flexible schedule.
+     *
+     * @param scheduleName name of the schedule
+     * @param startTime slot start time
+     * @param endTime slot end time
+     * @throws IllegalArgumentException if the schedule does not exist
+     */
     public void addFlexibleSlot(String scheduleName, LocalTime startTime, LocalTime endTime) {
         TimeTable currentSchedule = getSchedule(scheduleName);
 
@@ -56,6 +95,13 @@ public class SalonService {
 
     }
 
+    /**
+     * Returns all available slots for a schedule.
+     *
+     * @param scheduleName name of the schedule
+     * @return list of slots that are not booked
+     * @throws IllegalArgumentException if the schedule does not exist
+     */
     public List<Slot> getAvailableSlots(String scheduleName) {
         List<Slot> availableSlots = new ArrayList<>();
         TimeTable currentSchedule = getSchedule(scheduleName);
@@ -69,6 +115,15 @@ public class SalonService {
 
     }
 
+    /**
+     * Books an appointment in a selected slot.
+     *
+     * @param scheduleName name of the schedule
+     * @param slotId ID of the slot to book
+     * @param customerName name of the customer
+     * @param customerEmail email address of the customer
+     * @throws IllegalArgumentException if the schedule or slot does not exist
+     */
     public void bookAppointment(String scheduleName, String slotId, String customerName, String customerEmail) {
 
         TimeTable currentSchedule = getSchedule(scheduleName);
@@ -82,6 +137,13 @@ public class SalonService {
 
     }
 
+    /**
+     * Returns all booked slots for a schedule.
+     *
+     * @param scheduleName name of the schedule
+     * @return list of booked slots
+     * @throws IllegalArgumentException if the schedule does not exist
+     */
     public List<Slot> getBookedSlots(String scheduleName){
         List<Slot> bookedSlots = new ArrayList<>();
 
@@ -95,6 +157,11 @@ public class SalonService {
 
     }
 
+    /**
+     * Returns the names of all schedules.
+     *
+     * @return list of schedule names
+     */
     public List<String> getScheduleNames() {
     return new ArrayList<>(schedules.keySet());
 }

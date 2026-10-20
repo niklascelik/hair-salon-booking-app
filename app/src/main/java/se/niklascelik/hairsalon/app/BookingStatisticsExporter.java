@@ -9,14 +9,28 @@ import java.util.List;
 
 import se.lnu.rm222xi.svgcharts.BarChart;
 
+/**
+ * Exports booking statistics for the salon as an SVG bar chart.
+ */
 public class BookingStatisticsExporter {
 
     private final SalonService salon;
 
+    /**
+     * Creates an exporter for the specified salon.
+     *
+     * @param salon the salon whose bookings should be exported
+     */
     public BookingStatisticsExporter(SalonService salon) {
         this.salon = salon;
     }
 
+    /**
+     * Creates and saves a bar chart showing the number of bookings per service.
+     *
+     * @throws IllegalStateException if no schedules are available or the SVG file
+     *                               cannot be saved
+     */
     public void export() {
 
         List<String> scheduleNames = salon.getScheduleNames();
