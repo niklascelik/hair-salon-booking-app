@@ -12,3 +12,11 @@ plugins {
 
 rootProject.name = 'hair-salon-booking-app'
 include('app')
+
+
+
+includeBuild('modules/booking-scheduler') {
+    dependencySubstitution {
+        substitute module('org.bookingscheduler:booking-scheduler') using project(':lib')
+    }
+}

@@ -1,0 +1,3 @@
+[submodule "modules/booking-scheduler"]
+	path = modules/booking-scheduler
+	url = https://github.com/niklascelik/booking-scheduler.git
