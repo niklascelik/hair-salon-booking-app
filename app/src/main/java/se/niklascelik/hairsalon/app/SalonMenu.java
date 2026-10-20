@@ -4,6 +4,8 @@ package se.niklascelik.hairsalon.app;
 import java.util.Scanner;
 import java.util.List;
 import org.bookingscheduler.Slot;
+import java.time.LocalTime;
+import java.time.format.DateTimeParseException;
 
 public class SalonMenu {
 
@@ -35,7 +37,8 @@ public class SalonMenu {
                     break;
 
                 case "2":
-                    System.out.println("Admin");
+                    showAdminMenu();
+                    clearScreen();
                     break;
 
                 case "0":
@@ -74,7 +77,9 @@ public class SalonMenu {
                     break;
 
                 case "2":
-                    System.out.println("Book an appointment placeholder");
+                    showBookingMenu();
+                    waitForEnter();
+                    clearScreen();
                     break;
 
                 case "0":
@@ -159,4 +164,223 @@ public class SalonMenu {
         System.out.print("\nPress Enter to continue...");
         scanner.nextLine();
     }
+
+    private void showBookingMenu() {
+
+        String scheduleName = selectService();
+
+        if (scheduleName == null) {
+            return;
+        }
+
+        List<Slot> availableSlots = salon.getAvailableSlots(scheduleName);
+
+        if (availableSlots.isEmpty()) {
+            System.out.println("No available appointments!");
+            return;
+        }
+
+        clearScreen();
+
+        System.out.println("=== BOOK AN APPOINTMENT ===");
+
+        for (Slot slot : availableSlots) {
+            System.out.println("Slot " + slot.getSlotId()
+                    + " | " + slot.getStartTime()
+                    + " - " + slot.getEndTime());
+        }
+
+        System.out.print("Enter slot ID: ");
+        String slotIdInput = scanner.nextLine();
+
+        clearScreen();
+
+        System.out.print("Enter your name: ");
+        String nameInput = scanner.nextLine();
+
+        clearScreen();
+
+        System.out.print("Enter your email: ");
+        String emailInput = scanner.nextLine();
+
+        clearScreen();
+
+        try {
+            salon.bookAppointment(scheduleName, slotIdInput, nameInput, emailInput);
+            System.out.println("Appointment booked successfully!");
+
+        } catch (IllegalArgumentException | IllegalStateException e) {
+            System.out.println("Booking failed: " + e.getMessage());
+        }
+    }
+
+    private void showAdminMenu() {
+
+        while (true) {
+            clearScreen();
+
+            System.out.println("=== ADMINISTRATOR MENU ===");
+            System.out.println("1. Create fixed schedule");
+            System.out.println("2. Create flexible schedule");
+            System.out.println("3. Add slot to flexible schedule");
+            System.out.println("4. View bookings");
+            System.out.println("5. Export booking statistics (SVG)");
+            System.out.println("0. Back to main menu");
+            System.out.print("Select an option: ");
+
+            String choice = scanner.nextLine();
+
+            if (choice.equals("0")) {
+                return;
+            }
+
+            clearScreen();
+
+            try {
+                switch (choice) {
+                    case "1":
+                        createFixedSchedule();
+                        break;
+
+                    case "2":
+                        createFlexibleSchedule();
+                        break;
+
+                    case "3":
+                        addFlexibleSlot();
+                        break;
+
+                    case "4":
+                        showBookings();
+                        break;
+
+                    case "5":
+                        System.out.println("SVG export is not implemented yet.");
+                        break;
+
+                    default:
+                        System.out.println("Invalid option. Please try again.");
+                        break;
+                }
+
+            } catch (IllegalArgumentException | IllegalStateException | DateTimeParseException e) {
+                System.out.println("Error: " + e.getMessage());
+            }
+
+            waitForEnter();
+        }
+    }
+
+    private void createFixedSchedule() {
+
+        System.out.println("=== CREATE FIXED SCHEDULE ===");
+
+        System.out.print("Schedule name: ");
+        String scheduleName = scanner.nextLine();
+
+        LocalTime openingTime = readTime("Opening time (HH:mm): ");
+        LocalTime closingTime = readTime("Closing time (HH:mm): ");
+
+        validateOpeningHours(openingTime, closingTime);
+
+        System.out.print("Slot duration (minutes): ");
+        int slotDuration = Integer.parseInt(scanner.nextLine().trim());
+
+        salon.createFixedSchedule(
+                scheduleName,
+                openingTime,
+                closingTime,
+                slotDuration);
+
+        System.out.println("Fixed schedule created successfully!");
+    }
+
+    private void createFlexibleSchedule() {
+
+        System.out.println("=== CREATE FLEXIBLE SCHEDULE ===");
+
+        System.out.print("Schedule name: ");
+        String scheduleName = scanner.nextLine();
+
+        LocalTime openingTime = readTime("Opening time (HH:mm): ");
+        LocalTime closingTime = readTime("Closing time (HH:mm): ");
+
+        validateOpeningHours(openingTime, closingTime);
+
+        salon.createFlexibleSchedule(
+                scheduleName,
+                openingTime,
+                closingTime);
+
+        System.out.println("Flexible schedule created successfully!");
+    }
+
+    private void addFlexibleSlot() {
+
+        String scheduleName = selectService();
+
+        if (scheduleName == null) {
+            return;
+        }
+
+        clearScreen();
+
+        System.out.println("=== ADD FLEXIBLE SLOT ===");
+        System.out.println("Schedule: " + scheduleName);
+
+        LocalTime startTime = readTime("Start time (Hour:minute): ");
+        LocalTime endTime = readTime("End time (Hour:minute): ");
+
+        salon.addFlexibleSlot(scheduleName, startTime, endTime);
+
+        System.out.println("Slot added successfully!");
+    }
+
+    private void showBookings() {
+
+        String scheduleName = selectService();
+
+        if (scheduleName == null) {
+            return;
+        }
+
+        clearScreen();
+
+        System.out.println("=== BOOKINGS: " + scheduleName + " ===");
+
+        List<Slot> bookedSlots = salon.getBookedSlots(scheduleName);
+
+        if (bookedSlots.isEmpty()) {
+            System.out.println("No bookings found.");
+            return;
+        }
+
+        for (Slot slot : bookedSlots) {
+            System.out.println(
+                    "Slot " + slot.getSlotId()
+                            + " | " + slot.getStartTime()
+                            + " - " + slot.getEndTime());
+
+            System.out.println(
+                    "Customer: " + slot.getBooking().getCustomerName());
+
+            System.out.println(
+                    "Email: " + slot.getBooking().getCustomerEmail());
+
+            System.out.println("-----------------------------");
+        }
+    }
+
+    private LocalTime readTime(String prompt) {
+        System.out.print(prompt);
+        return LocalTime.parse(scanner.nextLine().trim());
+    }
+
+    private void validateOpeningHours(LocalTime openingTime, LocalTime closingTime) {
+        if (!openingTime.isBefore(closingTime)) {
+            throw new IllegalArgumentException(
+                    "Opening time must be before closing time.");
+        }
+    }
+
 }
