@@ -95,4 +95,9 @@ public class SalonService {
 
     }
 
+    public List<String> getScheduleNames() {
+    return new ArrayList<>(schedules.keySet());
+}
+   
+
 }

@@ -2,8 +2,7 @@
 package se.niklascelik.hairsalon.app;
 
 import java.time.LocalTime;
-import org.bookingscheduler.TimeTable;
-import org.bookingscheduler.Slot;
+import java.util.Scanner;
 
 public class App {
 
@@ -11,6 +10,15 @@ public class App {
 
         SalonService salon = new SalonService();
 
+        // Test schedule 1: Fixed appointments
+        salon.createFixedSchedule(
+                "Haircuts",
+                LocalTime.of(9, 0),
+                LocalTime.of(12, 0),
+                30
+        );
+
+        // Test schedule 2: Flexible appointments
         salon.createFlexibleSchedule(
                 "Hair Coloring",
                 LocalTime.of(9, 0),
@@ -23,16 +31,24 @@ public class App {
                 LocalTime.of(12, 0)
         );
 
-        TimeTable schedule = salon.getSchedule("Hair coloring");
+        salon.addFlexibleSlot(
+                "Hair Coloring",
+                LocalTime.of(13, 0),
+                LocalTime.of(15, 0)
+        );
 
-        System.out.println("=== HAIR COLORING SCHEDULE ===");
+        // Book one appointment to verify it disappears
+        // from the available slots
+        salon.bookAppointment(
+                "Haircuts",
+                "2",
+                "Anna",
+                "anna@example.com"
+        );
 
-        for (Slot slot : schedule.getSlots()) {
-            System.out.println(
-                    slot.getSlotId() + " | " +
-                    slot.getStartTime() + " - " +
-                    slot.getEndTime()
-            );
-        }
+        Scanner scanner = new Scanner(System.in);
+        SalonMenu menu = new SalonMenu(scanner, salon);
+
+        menu.run();
     }
 }

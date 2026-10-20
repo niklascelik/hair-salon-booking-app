@@ -14,3 +14,6 @@ dependencies {
 application {
     mainClass = 'se.niklascelik.hairsalon.app.App'
 }
+tasks.named('run', JavaExec) {
+    standardInput = System.in
+}
