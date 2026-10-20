@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.List;
 import org.bookingscheduler.Slot;
 import java.util.ArrayList;
+import org.bookingscheduler.Booking;
 
 public class SalonService {
 
@@ -65,6 +66,20 @@ public class SalonService {
             }
         }
         return availableSlots;
+
+    }
+
+    public void bookAppointment(String scheduleName, String slotId, String customerName, String customerEmail) {
+
+        TimeTable currentSchedule = getSchedule(scheduleName);
+       Slot selectedSlot = currentSchedule.getSlotById(slotId);
+       if(selectedSlot == null){
+        throw new IllegalArgumentException("Slot doesnt exist.");
+       }
+
+       Booking booking = new Booking(customerName, customerEmail);
+
+       selectedSlot.book(booking);
 
     }
 
