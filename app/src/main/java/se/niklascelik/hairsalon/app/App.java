@@ -9,14 +9,23 @@ public class App {
 
     public static void main(String[] args) {
 
-        TimeTable schedule = new TimeTable(
-                30,
-                true,
+        SalonService salon = new SalonService();
+
+        salon.createFlexibleSchedule(
+                "Hair Coloring",
                 LocalTime.of(9, 0),
+                LocalTime.of(17, 0)
+        );
+
+        salon.addFlexibleSlot(
+                "Hair Coloring",
+                LocalTime.of(10, 0),
                 LocalTime.of(12, 0)
         );
 
-        System.out.println("=== HAIR SALON SCHEDULE ===");
+        TimeTable schedule = salon.getSchedule("Hair coloring");
+
+        System.out.println("HAIR COLORING SCHEDULE");
 
         for (Slot slot : schedule.getSlots()) {
             System.out.println(
