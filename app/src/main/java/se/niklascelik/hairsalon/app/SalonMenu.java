@@ -93,11 +93,36 @@ public class SalonMenu {
     }
 
     private void showAvailableTimes() {
+
+        String scheduleName = selectService();
+
+        if (scheduleName == null) {
+            return;
+        }
+
+        clearScreen();
+
+        List<Slot> availableSlots = salon.getAvailableSlots(scheduleName);
+
+        if (availableSlots.isEmpty()) {
+            System.out.println("No available appointments!");
+            return;
+        }
+
+        for (Slot slot : availableSlots) {
+            System.out.println("Slot " + slot.getSlotId()
+                    + " | " + slot.getStartTime()
+                    + " - " + slot.getEndTime());
+        }
+
+    }
+
+    private String selectService() {
         List<String> scheduleNames = salon.getScheduleNames();
 
         if (scheduleNames.isEmpty()) {
             System.out.println("No services available.");
-            return;
+            return null;
         }
 
         clearScreen();
@@ -114,30 +139,15 @@ public class SalonMenu {
 
         } catch (NumberFormatException e) {
             System.out.println("Please enter a valid number");
-            return;
+            return null;
         }
 
         if (selectedServiceNumber < 1 || selectedServiceNumber > scheduleNames.size()) {
             System.out.println("Please select a valid service");
-            return;
+            return null;
 
         }
-
-        clearScreen();
-
-        List<Slot> availableSlots = salon.getAvailableSlots(scheduleNames.get(selectedServiceNumber - 1));
-
-        if (availableSlots.isEmpty()) {
-            System.out.println("No available appointments!");
-            return;
-        }
-
-        for (Slot slot : availableSlots) {
-            System.out.println("Slot " + slot.getSlotId()
-                    + " | " + slot.getStartTime()
-                    + " - " + slot.getEndTime());
-        }
-
+        return scheduleNames.get(selectedServiceNumber - 1);
     }
 
     private void clearScreen() {
