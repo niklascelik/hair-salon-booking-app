@@ -72,14 +72,26 @@ public class SalonService {
     public void bookAppointment(String scheduleName, String slotId, String customerName, String customerEmail) {
 
         TimeTable currentSchedule = getSchedule(scheduleName);
-       Slot selectedSlot = currentSchedule.getSlotById(slotId);
-       if(selectedSlot == null){
-        throw new IllegalArgumentException("Slot doesnt exist.");
-       }
+        Slot selectedSlot = currentSchedule.getSlotById(slotId);
+        if (selectedSlot == null) {
+            throw new IllegalArgumentException("Slot doesnt exist.");
+        }
 
-       Booking booking = new Booking(customerName, customerEmail);
+        Booking booking = new Booking(customerName, customerEmail);
+        selectedSlot.book(booking);
 
-       selectedSlot.book(booking);
+    }
+
+    public List<Slot> getBookedSlots(String scheduleName){
+        List<Slot> bookedSlots = new ArrayList<>();
+
+        TimeTable currentSchedule =  getSchedule(scheduleName);
+        for (Slot slot : currentSchedule.getSlots()) {
+            if (slot.getBooking() != null){
+                bookedSlots.add(slot);
+            } 
+        }
+        return bookedSlots;
 
     }
 

@@ -25,7 +25,7 @@ public class App {
 
         TimeTable schedule = salon.getSchedule("Hair coloring");
 
-        System.out.println("HAIR COLORING SCHEDULE");
+        System.out.println("=== HAIR COLORING SCHEDULE ===");
 
         for (Slot slot : schedule.getSlots()) {
             System.out.println(
