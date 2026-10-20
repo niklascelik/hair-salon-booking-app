@@ -5,7 +5,9 @@ import java.time.LocalTime;
 import org.bookingscheduler.TimeTable;
 import java.util.HashMap;
 import java.util.Map;
-
+import java.util.List;
+import org.bookingscheduler.Slot;
+import java.util.ArrayList;
 
 public class SalonService {
 
@@ -50,7 +52,20 @@ public class SalonService {
         TimeTable currentSchedule = getSchedule(scheduleName);
 
         currentSchedule.addSlot(startTime, endTime);
-        
+
+    }
+
+    public List<Slot> getAvailableSlots(String scheduleName) {
+        List<Slot> availableSlots = new ArrayList<>();
+        TimeTable currentSchedule = getSchedule(scheduleName);
+
+        for (Slot slot : currentSchedule.getSlots()) {
+            if (slot.getBooking() == null) {
+                availableSlots.add(slot);
+            }
+        }
+        return availableSlots;
+
     }
 
 }
