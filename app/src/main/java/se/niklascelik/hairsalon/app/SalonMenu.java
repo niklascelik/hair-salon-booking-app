@@ -255,7 +255,9 @@ public class SalonMenu {
                         break;
 
                     case "5":
-                        System.out.println("SVG export is not implemented yet.");
+                        BookingStatisticsExporter exporter = new BookingStatisticsExporter(salon);
+                        exporter.export();
+                        System.out.println("Statistics exported successfully!");
                         break;
 
                     default:
